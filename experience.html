@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" href="favicon.png" type="image/x-icon">
+    <title>ROBAJ Hotel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background: url('bg.png') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1;
+        }
+
+        #validator-container {
+            position: relative;
+            z-index: 2;
+            width: 500px;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            color: #333; /* Ensures main text is black */
+        }
+
+        h1 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        img {
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 3px solid hsl(38, 61%, 73%);
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 100%;
+            margin-top: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            color: #333;
+        }
+
+        button {
+            background-color: #333;
+            color: hsl(38, 61%, 73%);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: hsl(38, 61%, 73%);
+            color: #333;
+        }
+
+        .error {
+            color: hsl(38, 61%, 73%);
+        }
+    </style>
+</head>
+<body>
+    <div id="validator-container">
+        <h1>Hotel Experience Validator</h1>
+        <input type="text" id="certificateCode" placeholder="Enter certificate code">
+        <button id="validateButton">Validate Certificate</button>
+        <div id="result" style="margin-top: 15px;"></div>
+    </div>
+
+    <script>
+        const certificates = {
+            "la001j": {
+                name: "Bishal Gaire",
+                workPeriod: "September 2021 - August 2024",
+                entryDate: "2021-09-02",
+                image: "bishal.png",
+                post: "Housekeeping",
+                reasonForLeave: "To Pursue Higher Education, Under good terms",
+                award: "Employee of the Year 2023"
+            },
+            "la0w02jjkdhkjhdh": {
+                name: "Bishal Gaire",
+                workPeriod: "September 2021 - August 2024",
+                entryDate: "2021-09-02",
+                image: "bishal.png",
+                post: "Social Media Manager",
+                reasonForLeave: "Personal Reasons",
+                award: "Employee of the Year 2023"
+            }
+        };
+
+        function validateCertificate(code) {
+            const resultDiv = document.getElementById("result");
+            const certificateKeys = Object.keys(certificates);
+            const lowerCaseKeys = certificateKeys.map(key => key.toLowerCase());
+
+            if (code === "") {
+                resultDiv.innerHTML = "<p class='error'>Please enter a certificate code.</p>";
+            } else if (lowerCaseKeys.includes(code)) {
+                const certKey = certificateKeys[lowerCaseKeys.indexOf(code)];
+                const cert = certificates[certKey];
+
+                resultDiv.innerHTML = `
+                    <div>
+                        <img src="${cert.image}" alt="${cert.name}'s photo" width="100" height="100">
+                        <h2 style="color: #333;">${cert.name}</h2>
+                        <p><strong>Work Period:</strong> ${cert.workPeriod}</p>
+                        <p><strong>Entry Date:</strong> ${cert.entryDate}</p>
+                        <p><strong>Post:</strong> ${cert.post}</p>
+                        <p><strong>Reason for Leave:</strong> ${cert.reasonForLeave}</p>
+                        <p><strong>Award:</strong> ${cert.award}</p>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = "<p class='error'>Maybe an invalid code. Please check.</p>";
+            }
+        }
+
+        function getCertificateCodeFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            if (code) {
+                validateCertificate(code.toLowerCase());
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            getCertificateCodeFromURL();
+
+            const validateButton = document.getElementById("validateButton");
+            if (validateButton) {
+                validateButton.addEventListener("click", function() {
+                    const codeInput = document.getElementById("certificateCode").value.trim().toLowerCase();
+                    validateCertificate(codeInput);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
